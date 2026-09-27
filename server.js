@@ -478,6 +478,24 @@ app.get('/api/download', (req, res) => {
 
     console.log('[Media Download Engine] Initiating download for:', mediaUrl.substring(0, 80));
 
+    // Instant Direct Stream Proxying (Bypasses server disk buffering for maximum speed)
+    const isDirectStream = mediaUrl.includes('googlevideo.com') ||
+                          mediaUrl.includes('cdninstagram.com') ||
+                          mediaUrl.includes('tiktokcdn.com') ||
+                          mediaUrl.includes('twimg.com') ||
+                          mediaUrl.includes('fbcdn.net') ||
+                          mediaUrl.includes('.mp4') ||
+                          mediaUrl.includes('.webm') ||
+                          mediaUrl.includes('.m3u8') ||
+                          mediaUrl.includes('/get_video') ||
+                          mediaUrl.includes('mime=video') ||
+                          mediaUrl.includes('expire=');
+
+    if (isDirectStream) {
+        console.log('[Media Download Engine] Instant stream proxying active for:', downloadName);
+        return proxyMediaStream(req, res, mediaUrl, 5, downloadName);
+    }
+
     // Create temp directory if it doesn't exist
     const tempDir = path.join(__dirname, 'temp_downloads');
     if (!fs.existsSync(tempDir)) {
