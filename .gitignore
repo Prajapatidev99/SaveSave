@@ -1,0 +1,6 @@
+node_modules/
+temp_downloads/
+.DS_Store
+*.log
+node.cmd
+git.cmd

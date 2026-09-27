@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaveSave - Universal Video Downloader</title>
+    <meta name="description" content="Download high quality videos and audio from YouTube, TikTok, Twitter/X, Instagram, Vimeo and direct links instantly.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%238B9A6E'/><path d='M8 10C8 7.5 10 5.5 12.5 5.5H16C18.5 5.5 20.5 7.5 20.5 10C20.5 12.2 18.8 14 16.5 14H12.5C10 14 8 16 8 18.5C8 21 10 23 12.5 23H17' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' fill='none'/><path d='M15 9H19.5C22 9 24 11 24 13.5C24 16 22 18 19.5 18H15.5C13.2 18 11.5 19.8 11.5 22C11.5 24.2 13.2 26 15.5 26H20.5' stroke='%23F7F2EB' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' fill='none'/><path d='M16 20V27M13 24.5L16 27.5L19 24.5' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navigation -->
+        <header class="navbar">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Save 1: Sleek Upper S Curve in Crisp White -->
+                        <path d="M8 10C8 7.5 10 5.5 12.5 5.5H16C18.5 5.5 20.5 7.5 20.5 10C20.5 12.2 18.8 14 16.5 14H12.5C10 14 8 16 8 18.5C8 21 10 23 12.5 23H17" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                        <!-- Save 2: Interlocking Lower S Curve in Warm Accent -->
+                        <path d="M15 9H19.5C22 9 24 11 24 13.5C24 16 22 18 19.5 18H15.5C13.2 18 11.5 19.8 11.5 22C11.5 24.2 13.2 26 15.5 26H20.5C23 26 24.5 24.2 24.5 22" stroke="#F7F2EB" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.92"/>
+                        <!-- Central Downward Download Velocity Arrow -->
+                        <path d="M16 20.5V27.5M12.5 24.5L16 28L19.5 24.5" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <span class="logo-title">Save<span class="brand-accent">Save</span></span>
+                    <span class="logo-subtitle">Universal Video Downloader</span>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="status-pill" id="serverStatusPill">
+                    <span class="status-dot"></span>
+                    <span id="serverStatusText">Connecting Engine...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <h1 class="hero-title">Download Any Video <span class="title-accent">Through Link</span></h1>
+                <p class="hero-subtitle">Fast, watermark-free video downloads in 1080p, 480p, or MP3 Audio from supported media platforms.</p>
+
+                <!-- Platform Badges with SVGs -->
+                <div class="platform-bar">
+                    <div class="platform-chip">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        YouTube
+                    </div>
+                    <div class="platform-chip">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+                        TikTok
+                    </div>
+                    <div class="platform-chip">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        Twitter / X
+                    </div>
+                    <div class="platform-chip">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        Instagram
+                    </div>
+                    <div class="platform-chip">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        Facebook
+                    </div>
+                    <div class="platform-chip">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.977 6.416c-.105 2.338-1.739 5.543-4.894 9.609-3.268 4.247-6.026 6.37-8.29 6.37-1.409 0-2.578-1.294-3.553-3.881L5.322 11.4C4.603 8.816 3.834 7.525 3.01 7.525c-.179 0-.806.378-1.881 1.132L0 7.197c1.185-1.044 2.351-2.084 3.501-3.128C5.127 2.684 6.273 1.95 6.941 1.95c1.644 0 2.649 1.107 3.012 3.321.386 2.381.652 3.864.8 4.453.447 2.007.94 3.01 1.479 3.01.417 0 .99-.607 1.719-1.821.729-1.214 1.123-2.138 1.18-2.774.12-.953-.255-1.431-1.127-1.431-.417 0-.882.095-1.396.283 1.054-3.454 3.065-5.143 6.035-5.068 2.204.053 3.254 1.503 3.149 4.349z"/></svg>
+                        Vimeo
+                    </div>
+                    <div class="platform-chip">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                        Direct MP4
+                    </div>
+                </div>
+
+                <!-- Security Safeguards Trust Bar -->
+                <div class="security-trust-bar">
+                    <div class="security-trust-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            <polyline points="9 12 11 14 15 10"/>
+                        </svg>
+                        <span><strong>SaveSave Protected:</strong> Real-time Anti-Malware & Executable Blocking Active</span>
+                    </div>
+                    <div class="security-features">
+                        <span class="sec-feature">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            Executables Blocked
+                        </span>
+                        <span class="sec-feature">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            Verified Streams Only
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Input Box Container -->
+                <div class="search-box-container">
+                    <form id="urlForm" class="search-box">
+                        <div class="search-input-group">
+                            <div class="input-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                                </svg>
+                            </div>
+                            <input 
+                                type="url" 
+                                id="videoUrlInput" 
+                                placeholder="Paste video link here (YouTube, TikTok, MP4 link)..." 
+                                required 
+                                autocomplete="off"
+                                spellcheck="false"
+                            >
+                            <div class="input-actions">
+                                <button type="button" class="btn-icon" id="clearBtn" title="Clear input" style="display: none;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="18" y1="6" x2="6" y2="18"/>
+                                        <line x1="6" y1="6" x2="18" y2="18"/>
+                                    </svg>
+                                </button>
+                                <button type="button" class="btn-paste" id="pasteBtn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+                                    </svg>
+                                    Paste
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-fetch" id="fetchBtn">
+                            <span class="btn-text">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                </svg>
+                                Extract Video
+                            </span>
+                            <span class="spinner" style="display: none;"></span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Quick Try Sample Links -->
+                <div class="sample-links-bar">
+                    <span class="sample-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon-sm">
+                            <line x1="9" y1="18" x2="15" y2="18"/>
+                            <line x1="10" y1="22" x2="14" y2="22"/>
+                            <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>
+                        </svg>
+                        Sample links:
+                    </span>
+                    <button type="button" class="sample-btn" data-url="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+                        <svg viewBox="0 0 24 24" fill="currentColor" class="svg-icon-sm"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        YouTube Music
+                    </button>
+                    <button type="button" class="sample-btn" data-url="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon-sm"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>
+                        Flower MP4
+                    </button>
+                    <button type="button" class="sample-btn" data-url="https://vjs.zencdn.net/v/oceans.mp4">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon-sm"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                        Oceans Trailer MP4
+                    </button>
+                </div>
+            </section>
+
+            <!-- Loading Spinner State -->
+            <div class="loader-card" id="loaderCard" style="display: none;">
+                <div class="pulse-loader">
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                </div>
+                <h3>Extracting Video Info...</h3>
+                <p>Analyzing formats, resolutions, and media streams from server</p>
+            </div>
+
+            <!-- Error Banner -->
+            <div class="error-card" id="errorCard" style="display: none;">
+                <div class="error-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                </div>
+                <div class="error-content">
+                    <h4 id="errorTitle">Extraction Failed</h4>
+                    <p id="errorMessage">Unable to fetch video information. Please check the URL and try again.</p>
+                    <div id="htmlPasteHelper" style="display: none; margin-top: 10px;">
+                        <button type="button" class="btn-html-helper" id="openHtmlPasteBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon-sm"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                            Paste Page HTML / Source (Bypass Protected Site)
+                        </button>
+                    </div>
+                </div>
+                <button type="button" class="error-close" id="closeErrorBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon-sm"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+
+            <!-- HTML Source Modal for Protected Sites -->
+            <div class="modal-backdrop" id="htmlModal" style="display: none;">
+                <div class="modal-card">
+                    <div class="modal-header">
+                        <h3>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                            Bypass Protection & Extract Stream
+                        </h3>
+                        <button type="button" class="modal-close" id="closeHtmlModalBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="modal-help">Some protected sites block direct server connections. Follow these simple steps to download:</p>
+                        <ol class="modal-steps">
+                            <li>Open <a id="targetSiteLink" href="#" target="_blank" rel="noopener" style="color: #8B9A6E; font-weight: 600; text-decoration: underline;">your video page</a> in a new tab.</li>
+                            <li>Press <kbd>Ctrl</kbd> + <kbd>U</kbd> (or Right-Click &rarr; <em>View Page Source</em>).</li>
+                            <li>Press <kbd>Ctrl</kbd> + <kbd>A</kbd> then <kbd>Ctrl</kbd> + <kbd>C</kbd> to copy everything.</li>
+                            <li>Paste it below and click <strong>Extract Stream</strong>:</li>
+                        </ol>
+                        <textarea id="htmlSourceInput" rows="7" placeholder="Paste full page source HTML here..."></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" id="cancelHtmlModalBtn">Cancel</button>
+                        <button type="button" class="btn-fetch" id="extractHtmlBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            Extract Stream
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Preview & Download Card -->
+            <div class="video-card" id="videoCard" style="display: none;">
+                <div class="card-grid">
+                    <!-- Left: Thumbnail & Live Preview Player -->
+                    <div class="card-media">
+                        <div class="media-container" id="mediaContainer">
+                            <img id="videoThumbnail" src="" alt="Video Thumbnail">
+                            <div class="duration-badge" id="durationBadge">00:00</div>
+                            <button class="play-overlay-btn" id="playPreviewBtn" title="Preview video inline">
+                                <svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+                            </button>
+                        </div>
+                        <div class="player-wrapper" id="playerWrapper" style="display: none;">
+                            <video id="previewPlayer" controls preload="metadata"></video>
+                            <button class="close-player-btn" id="closePlayerBtn">Back to Thumbnail</button>
+                        </div>
+                    </div>
+
+                    <!-- Right: Info & Format Selectors -->
+                    <div class="card-details">
+                        <div class="video-header">
+                            <div class="video-header-top">
+                                <div class="video-platform-badge" id="platformBadge">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon-sm"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                                    <span id="platformName">Platform</span>
+                                </div>
+                                <div class="security-verified-pill" title="Media stream verified safe by SaveSave Security Guard">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon-sm"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                                    Safe Stream Verified
+                                </div>
+                            </div>
+                            <h2 class="video-title" id="videoTitle">Video Title Loading...</h2>
+                            <div class="video-meta">
+                                <span class="meta-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon-sm"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                    <span id="videoAuthor">Channel Name</span>
+                                </span>
+                                <span class="meta-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon-sm"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    <span id="videoDuration">00:00</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Quality & Format Selection -->
+                        <div class="format-selection-section">
+                            <h3 class="section-subtitle">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+                                Select Format & Resolution
+                            </h3>
+                            <div class="format-options-grid" id="formatOptionsGrid">
+                                <!-- Format option items inserted dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Download Action -->
+                        <div class="download-action-box">
+                            <button type="button" class="btn-download-main" id="startDownloadBtn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                <div class="btn-download-text">
+                                    <span class="main-label">Download File Now</span>
+                                    <span class="sub-label" id="downloadFormatSublabel">Select a format above</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Download Progress Overlay Card -->
+            <div class="progress-card" id="progressCard" style="display: none;">
+                <div class="progress-header">
+                    <div class="progress-title-info">
+                        <div class="icon-downloading">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 id="progressFileName">Downloading Video...</h4>
+                            <span class="progress-status-tag" id="progressStatusTag">Downloading to browser</span>
+                        </div>
+                    </div>
+                    <div class="progress-percent" id="progressPercent">0%</div>
+                </div>
+
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+                </div>
+
+                <div class="progress-stats-row">
+                    <span>Speed: <strong id="progressSpeed">-- MB/s</strong></span>
+                    <span>Size: <strong id="progressSize">-- / --</strong></span>
+                    <span>Status: <strong id="progressEta">Transferring...</strong></span>
+                </div>
+            </div>
+
+            <!-- Download History Section -->
+            <section class="history-section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 8 14"/>
+                        </svg>
+                        Recent Downloads
+                    </div>
+                    <button type="button" class="btn-clear-history" id="clearHistoryBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        Clear History
+                    </button>
+                </div>
+
+                <div class="history-list" id="historyList">
+                    <div class="history-empty" id="emptyHistory">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
+                            <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+                        </svg>
+                        <p>No recent downloads yet. Paste a video link above to get started!</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>SaveSave &bull; Clean Universal Media Downloader &bull; Built with HTML5 & Vanilla CSS</p>
+        </footer>
+    </div>
+
+    <!-- Hidden Download Target Iframe -->
+    <iframe id="downloadIframe" name="downloadIframe" style="display:none; width:0; height:0; border:none; visibility:hidden;"></iframe>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
