@@ -8,6 +8,7 @@ const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const PYTHON_BIN = process.env.PYTHON_BIN || (process.platform === 'win32' ? 'python' : 'python3');
 
 app.use(cors());
 app.use(express.json());
@@ -102,7 +103,7 @@ function isSecurityThreatUrl(urlStr) {
 
 // Health Check API
 app.get('/api/health', (req, res) => {
-    exec('python -m yt_dlp --version', (err, stdout, stderr) => {
+    exec(`${PYTHON_BIN} -m yt_dlp --version`, (err, stdout, stderr) => {
         const ytDlpVersion = err ? "Not Found (Fallback Mode)" : stdout.trim();
         res.json({
             status: "online",
@@ -164,7 +165,7 @@ app.post('/api/extract', (req, res) => {
     }
 
     // Call Python Extractor
-    const pyProcess = spawn('python', ['extractor.py', 'info', cleanUrl]);
+    const pyProcess = spawn(PYTHON_BIN, ['extractor.py', 'info', cleanUrl]);
     let stdoutData = '';
     let stderrData = '';
 
@@ -497,7 +498,7 @@ app.get('/api/download', (req, res) => {
         mediaUrl
     ];
 
-    const dlProcess = spawn('python', ytdlpArgs, { cwd: tempDir });
+    const dlProcess = spawn(PYTHON_BIN, ytdlpArgs, { cwd: tempDir });
 
     let stderrOutput = '';
     dlProcess.stderr.on('data', (data) => {
