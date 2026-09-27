@@ -189,7 +189,13 @@ def extract_info(url):
         'no_warnings': True,
         'skip_download': True,
         'check_formats': False,
-        'socket_timeout': 5,
+        'socket_timeout': 15,
+        'noplaylist': True,
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'ios', 'web', 'mweb']
+            }
+        },
         'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     }
 
