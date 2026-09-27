@@ -1,8 +1,13 @@
 {
   "version": 2,
+  "functions": {
+    "server.js": {
+      "includeFiles": "style.css,app.js,index.html,public/**"
+    }
+  },
   "rewrites": [
     {
-      "source": "/api/(.*)",
+      "source": "/(.*)",
       "destination": "/server.js"
     }
   ]

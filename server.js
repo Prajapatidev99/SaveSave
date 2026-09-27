@@ -38,6 +38,28 @@ app.get('/', (req, res) => {
         `);
 });
 
+app.get('/style.css', (req, res) => {
+    const rootCss = path.join(__dirname, 'style.css');
+    const publicCss = path.join(__dirname, 'public', 'style.css');
+    const cssPath = fs.existsSync(rootCss) ? rootCss : publicCss;
+    if (fs.existsSync(cssPath)) {
+        res.setHeader('Content-Type', 'text/css; charset=utf-8');
+        return res.sendFile(cssPath);
+    }
+    res.status(404).type('text/plain').send('/* style.css not found */');
+});
+
+app.get('/app.js', (req, res) => {
+    const rootJs = path.join(__dirname, 'app.js');
+    const publicJs = path.join(__dirname, 'public', 'app.js');
+    const jsPath = fs.existsSync(rootJs) ? rootJs : publicJs;
+    if (fs.existsSync(jsPath)) {
+        res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+        return res.sendFile(jsPath);
+    }
+    res.status(404).type('text/plain').send('// app.js not found');
+});
+
 // ============================================================
 // Security & Anti-Malware Safeguards Engine
 // ============================================================
