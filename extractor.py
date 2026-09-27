@@ -184,30 +184,52 @@ def extract_info(url):
     if not yt_dlp:
         return json.dumps({"error": "yt-dlp is not installed on server"})
 
-    ydl_opts = {
-        'quiet': True,
-        'no_warnings': True,
-        'skip_download': True,
-        'check_formats': False,
-        'socket_timeout': 15,
-        'noplaylist': True,
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['android', 'ios', 'web', 'mweb']
-            }
-        },
-        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    }
+    clients_to_try = [
+        ['ios'],
+        ['tv_embedded'],
+        ['mweb'],
+        ['android_creator'],
+        ['web', 'mweb']
+    ]
+
+    last_error = None
+    info = None
+
+    for client in clients_to_try:
+        ydl_opts = {
+            'quiet': True,
+            'no_warnings': True,
+            'skip_download': True,
+            'check_formats': False,
+            'socket_timeout': 15,
+            'noplaylist': True,
+            'extractor_args': {
+                'youtube': {
+                    'player_client': client,
+                    'player_skip': ['webpage', 'configs', 'js']
+                }
+            },
+            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        }
+
+        try:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(url, download=False)
+                if info:
+                    break
+        except Exception as e:
+            last_error = e
+            continue
+
+    if not info:
+        return json.dumps({"success": False, "error": str(last_error) if last_error else "Extraction failed"})
 
     try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=False)
-            
-            # If playlist/multi-video, pick first entry
-            if 'entries' in info and info['entries']:
-                entry = info['entries'][0]
-                if entry:
-                    info = entry
+        # If playlist/multi-video, pick first entry
+        if 'entries' in info and info['entries']:
+            entry = info['entries'][0]
+            if entry:
+                info = entry
 
             title = info.get('title') or "Video Download"
             

@@ -493,6 +493,7 @@ app.get('/api/download', (req, res) => {
         '--no-warnings',
         '-f', 'best',
         '--no-part',
+        '--extractor-args', 'youtube:player_client=ios,tv_embedded,mweb;player_skip=webpage,configs,js',
         '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         '-o', tempFile,
         mediaUrl
