@@ -509,10 +509,9 @@ app.get('/api/download', (req, res) => {
         '-m', 'yt_dlp',
         '--quiet',
         '--no-warnings',
-        '-f', 'best',
+        '-f', 'bv*+ba/b',
         '--no-part',
-        '--extractor-args', 'youtube:player_client=ios,tv_embedded,mweb;player_skip=webpage,configs,js',
-        '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
         '-o', tempFile,
         mediaUrl
     ];

@@ -184,33 +184,50 @@ def extract_info(url):
     if not yt_dlp:
         return json.dumps({"error": "yt-dlp is not installed on server"})
 
-    clients_to_try = [
-        ['ios'],
-        ['tv_embedded'],
-        ['mweb'],
-        ['android_creator'],
-        ['web', 'mweb']
+    # Modern extraction strategies (2024-2026 compatible)
+    # Strategy 1: Let yt-dlp auto-select the best client (default behavior)
+    # Strategy 2: Use web_creator client (works for most videos)
+    # Strategy 3: Use mweb + android_vr as fallback
+    # NOTE: 'ios', 'tv_embedded' are deprecated/broken by YouTube.
+    # NOTE: Do NOT use player_skip=['webpage','configs','js'] — yt-dlp needs
+    #       the player JS to decrypt signatures on modern YouTube.
+    extraction_strategies = [
+        {
+            # Default: let yt-dlp pick the best client automatically
+        },
+        {
+            'youtube': {
+                'player_client': ['web_creator', 'mweb'],
+            }
+        },
+        {
+            'youtube': {
+                'player_client': ['android_vr', 'web'],
+            }
+        },
+        {
+            'youtube': {
+                'player_client': ['mediaconnect'],
+            }
+        },
     ]
 
     last_error = None
     info = None
 
-    for client in clients_to_try:
+    for strategy in extraction_strategies:
         ydl_opts = {
             'quiet': True,
             'no_warnings': True,
             'skip_download': True,
             'check_formats': False,
-            'socket_timeout': 15,
+            'socket_timeout': 20,
             'noplaylist': True,
-            'extractor_args': {
-                'youtube': {
-                    'player_client': client,
-                    'player_skip': ['webpage', 'configs', 'js']
-                }
-            },
-            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
         }
+
+        if strategy:
+            ydl_opts['extractor_args'] = strategy
 
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -231,98 +248,97 @@ def extract_info(url):
             if entry:
                 info = entry
 
-            title = info.get('title') or "Video Download"
-            
-            # Select best thumbnail reliably across extractions
-            thumbnails = info.get('thumbnails') or []
-            if thumbnails:
-                best_thumb = max(thumbnails, key=lambda t: (t.get('preference') or 0, t.get('height') or 0, t.get('width') or 0))
-                thumbnail = best_thumb.get('url') or info.get('thumbnail') or ""
-            else:
-                thumbnail = info.get('thumbnail') or ""
+        title = info.get('title') or "Video Download"
+        
+        # Select best thumbnail reliably across extractions
+        thumbnails = info.get('thumbnails') or []
+        if thumbnails:
+            best_thumb = max(thumbnails, key=lambda t: (t.get('preference') or 0, t.get('height') or 0, t.get('width') or 0))
+            thumbnail = best_thumb.get('url') or info.get('thumbnail') or ""
+        else:
+            thumbnail = info.get('thumbnail') or ""
 
-            duration_raw = info.get('duration')
-            uploader = info.get('uploader') or info.get('channel') or info.get('uploader_id') or "Unknown Creator"
-            extractor = info.get('extractor') or info.get('extractor_key') or "video"
-            platform = get_platform_name(extractor)
+        duration_raw = info.get('duration')
+        uploader = info.get('uploader') or info.get('channel') or info.get('uploader_id') or "Unknown Creator"
+        extractor = info.get('extractor') or info.get('extractor_key') or "video"
+        platform = get_platform_name(extractor)
 
-            # Filter formats
-            formats_raw = info.get('formats') or []
-            processed_formats = []
+        # Filter formats
+        formats_raw = info.get('formats') or []
+        processed_formats = []
 
-            # We want clean downloadable video/audio formats
-            # Check for best combined format or video formats with heights
-            seen_resolutions = set()
+        # We want clean downloadable video/audio formats
+        seen_resolutions = set()
 
-            # Pre-add MP3 / Audio Option
-            audio_formats = [f for f in formats_raw if f.get('acodec') != 'none' and f.get('vcodec') == 'none']
-            best_audio = max(audio_formats, key=lambda f: f.get('tbr') or f.get('filesize') or 0) if audio_formats else None
-            
-            # Sort formats by height descending
-            video_formats = [f for f in formats_raw if f.get('height') or f.get('resolution')]
-            video_formats.sort(key=lambda f: (f.get('height') or 0, f.get('tbr') or 0), reverse=True)
+        # Pre-add MP3 / Audio Option
+        audio_formats = [f for f in formats_raw if f.get('acodec') != 'none' and f.get('vcodec') == 'none']
+        best_audio = max(audio_formats, key=lambda f: f.get('tbr') or f.get('filesize') or 0) if audio_formats else None
+        
+        # Sort formats by height descending
+        video_formats = [f for f in formats_raw if f.get('height') or f.get('resolution')]
+        video_formats.sort(key=lambda f: (f.get('height') or 0, f.get('tbr') or 0), reverse=True)
 
-            for fmt in video_formats:
-                height = fmt.get('height')
-                if not height:
-                    continue
-                res_label = f"{height}p"
-                if res_label not in seen_resolutions and height in [1080, 720, 480, 360, 240, 144, 2160, 1440]:
-                    seen_resolutions.add(res_label)
-                    size_str = format_bytes(fmt.get('filesize') or fmt.get('filesize_approx'))
-                    ext = fmt.get('ext') or 'mp4'
-                    format_id = fmt.get('format_id')
-                    
-                    processed_formats.append({
-                        "format_id": format_id,
-                        "quality": res_label,
-                        "height": height,
-                        "type": "video",
-                        "ext": ext,
-                        "size": size_str,
-                        "url": fmt.get('url'),
-                        "note": fmt.get('format_note') or res_label
-                    })
-
-            # If no specific heights found, fallback to best format
-            if not processed_formats:
-                best_fmt = info.get('url') or (formats_raw[-1].get('url') if formats_raw else url)
+        for fmt in video_formats:
+            height = fmt.get('height')
+            if not height:
+                continue
+            res_label = f"{height}p"
+            if res_label not in seen_resolutions and height in [1080, 720, 480, 360, 240, 144, 2160, 1440]:
+                seen_resolutions.add(res_label)
+                size_str = format_bytes(fmt.get('filesize') or fmt.get('filesize_approx'))
+                ext = fmt.get('ext') or 'mp4'
+                format_id = fmt.get('format_id')
+                
                 processed_formats.append({
-                    "format_id": "best",
-                    "quality": "Best Quality (MP4)",
-                    "height": 720,
+                    "format_id": format_id,
+                    "quality": res_label,
+                    "height": height,
                     "type": "video",
-                    "ext": "mp4",
-                    "size": format_bytes(info.get('filesize_approx')),
-                    "url": best_fmt,
-                    "note": "Standard High Quality"
+                    "ext": ext,
+                    "size": size_str,
+                    "url": fmt.get('url'),
+                    "note": fmt.get('format_note') or res_label
                 })
 
-            # Add Audio Only format
+        # If no specific heights found, fallback to best format
+        if not processed_formats:
+            best_fmt = info.get('url') or (formats_raw[-1].get('url') if formats_raw else url)
             processed_formats.append({
-                "format_id": "audio_mp3",
-                "quality": "Audio Only (MP3)",
-                "height": 0,
-                "type": "audio",
-                "ext": "mp3",
-                "size": format_bytes(best_audio.get('filesize') if best_audio else None),
-                "url": best_audio.get('url') if best_audio else None,
-                "note": "Extracted High Quality Audio"
+                "format_id": "best",
+                "quality": "Best Quality (MP4)",
+                "height": 720,
+                "type": "video",
+                "ext": "mp4",
+                "size": format_bytes(info.get('filesize_approx')),
+                "url": best_fmt,
+                "note": "Standard High Quality"
             })
 
-            result = {
-                "success": True,
-                "title": title,
-                "thumbnail": thumbnail,
-                "duration": format_duration(duration_raw),
-                "duration_seconds": duration_raw,
-                "uploader": uploader,
-                "platform": platform,
-                "webpage_url": info.get('webpage_url') or url,
-                "formats": processed_formats,
-                "direct_stream_url": info.get('url') or (formats_raw[-1].get('url') if formats_raw else None)
-            }
-            return json.dumps(result)
+        # Add Audio Only format
+        processed_formats.append({
+            "format_id": "audio_mp3",
+            "quality": "Audio Only (MP3)",
+            "height": 0,
+            "type": "audio",
+            "ext": "mp3",
+            "size": format_bytes(best_audio.get('filesize') if best_audio else None),
+            "url": best_audio.get('url') if best_audio else None,
+            "note": "Extracted High Quality Audio"
+        })
+
+        result = {
+            "success": True,
+            "title": title,
+            "thumbnail": thumbnail,
+            "duration": format_duration(duration_raw),
+            "duration_seconds": duration_raw,
+            "uploader": uploader,
+            "platform": platform,
+            "webpage_url": info.get('webpage_url') or url,
+            "formats": processed_formats,
+            "direct_stream_url": info.get('url') or (formats_raw[-1].get('url') if formats_raw else None)
+        }
+        return json.dumps(result)
             
     except Exception as e:
         # Fallback for direct MP4/WebM files
